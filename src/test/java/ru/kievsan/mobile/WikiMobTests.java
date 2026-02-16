@@ -20,66 +20,47 @@ public class WikiMobTests {
         Thread.sleep(3000);
     }
 
+    @Test(priority = 1)
+    public void testMainScreenSearchIsDisplayed() {
+        boolean isDisplayed = appPage.isSearchContainerDisplayed();
+        System.out.println("The search field is displayed: " + isDisplayed);
+        Assert.assertTrue(isDisplayed);
+    }
+
+    @Test(priority = 2)
+    public void testSearchAndOpenArticle() throws InterruptedException {
+        String framework = "Pytest";
+        appPage.searchForArticle(framework);
+        Thread.sleep(4000);
+
+        String title = appPage.getArticleTitle();
+        System.out.println("Article title: '" + title + "'");
+
+        Assert.assertTrue(title != null && !title.isEmpty());
+        Assert.assertTrue(title.toLowerCase().contains(framework.toLowerCase()),
+                "The header should contain '" + framework + "'. Real: " + title);
+    }
+
+    @Test(priority = 3)
+    public void testSearchAndNavigateBack() throws InterruptedException {
+        appPage.searchForArticle("Selenium");
+        Thread.sleep(4000);
+
+        String title = appPage.getArticleTitle();
+        System.out.println("The following article is open: " + title);
+
+        appPage.navigateBack();
+        Thread.sleep(2000);
+
+        boolean isDisplayed = appPage.isSearchContainerDisplayed();
+        Assert.assertTrue(isDisplayed,
+                "After returning, the search field should be visible");
+    }
+
     @AfterMethod
     public void tearDown() {
         if (driver != null) {
             driver.quit();
         }
     }
-
-    @Test(priority = 1)
-    public void testMainScreenSearchIsDisplayed() {
-        boolean isDisplayed = appPage.isSearchContainerDisplayed();
-        System.out.println("Поле поиска отображается: " + isDisplayed);
-        Assert.assertTrue(isDisplayed);
-    }
-
-    @Test(priority = 2)
-    public void testSearchAndOpenArticle() throws InterruptedException {
-        appPage.searchForArticle("Appium");
-        Thread.sleep(3000);
-
-        String title = appPage.getArticleTitle();
-        System.out.println("Заголовок статьи: '" + title + "'");
-
-        Assert.assertTrue(title != null && !title.isEmpty());
-        Assert.assertTrue(title.toLowerCase().contains("appium"),
-                "Заголовок должен содержать 'Appium'. Фактический: " + title);
-    }
-
-    @Test(priority = 3)
-    public void testSearchAndNavigateBack() throws InterruptedException {
-        appPage.searchForArticle("Selenium");
-        Thread.sleep(3000);
-
-        String title = appPage.getArticleTitle();
-        System.out.println("Открыта статья: " + title);
-
-        appPage.navigateBack();
-        Thread.sleep(2000);
-
-        boolean isDisplayed = appPage.isSearchContainerDisplayed();
-        Assert.assertTrue(isDisplayed, "После возврата должно быть видно поле поиска");
-    }
 }
-
-
-//@Test для поиска ID
-//public void testFindRealElements() throws InterruptedException {
-//    Thread.sleep(15000);
-//
-//    String source = driver.getPageSource();
-//    System.out.println("=== PAGE SOURCE ===");
-//    System.out.println(source.substring(0, Math.min(2000, source.length())));
-//
-//    System.out.println("\n=== ALL ELEMENTS ===");
-//    var elements = driver.findElements(By.xpath("//*"));
-//    for (var el : elements) {
-//        String id = el.getAttribute("resource-id");
-//        String text = el.getText();
-//        String className = el.getAttribute("class");
-//        if (id != null && !id.isEmpty()) {
-//            System.out.println("ID: " + id + " | Class: " + className + " | Text: " + text);
-//        }
-//    }
-//}
