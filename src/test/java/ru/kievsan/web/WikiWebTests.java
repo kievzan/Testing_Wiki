@@ -13,32 +13,35 @@ public class WikiWebTests {
 
     private WebDriver driver;
     private WikiWebPage wikiWebPage;
-    private static final String BASE_URL = "https://ru.wikipedia.org/";
+    private static final String WIKI_URL = "https://ru.wikipedia.org/";
 
     @BeforeMethod
     public void setUp() {
         WebDriverManager.chromedriver().setup();
         driver = DriverFactory.createDriver();
         driver.manage().window().maximize();
-        driver.get(BASE_URL);
+        driver.get(WIKI_URL);
         wikiWebPage = new WikiWebPage(driver);
     }
 
     @Test
-    public void testMainPageLoadAndElementsDisplay() {
-        Assert.assertTrue(wikiWebPage.isMainContentDisplayed(), "Main Wikipedia page content is not displayed.");
+    public void testLoadingOfMainPageAndDisplayOfElements() {
+        Assert.assertTrue(wikiWebPage.isMainContentDisplayed(),
+                "The content of the Wikipedia homepage is not displayed.");
     }
 
     @Test
-    public void testSearchFunctionality() {
-        String searchQuery = "Россия";
-        String expectedArticleTitle = "Россия";
+    public void testSearchFunctional() {
+        String query = "Москва";
+        String expectedTitle = "Москва";
 
-        wikiWebPage.searchFor(searchQuery);
+        wikiWebPage.searchFor(query);
 
-        String heading = wikiWebPage.getFirstHeadingText();
+        String header = wikiWebPage.getFirstHeadingText();
 
-        Assert.assertEquals(heading, expectedArticleTitle, "Search failed. Expected heading: '" + expectedArticleTitle + "', but got: " + heading);
+        Assert.assertEquals(header, expectedTitle,
+                "Search failed. Expected header: '" + expectedTitle +
+                        "', real got: " + header);
     }
 
     @Test
@@ -48,14 +51,15 @@ public class WikiWebTests {
 
         wikiWebPage.clickRandomPageLink();
 
-        Assert.assertNotEquals(driver.getCurrentUrl(), originalUrl, "Transition to a random page did not occur (URL did not change).");
+        Assert.assertNotEquals(driver.getCurrentUrl(), originalUrl,
+                "There was no transition to a random page (the URL has not changed).");
     }
 
     @Test
-    public void testSearchInputInteractivity() {
+    public void testInteractivityOfDataEntryDuringSearch() {
         wikiWebPage.isMainContentDisplayed();
-
-        Assert.assertTrue(wikiWebPage.isSearchInputDisplayed(), "Search input element is not displayed or enabled for interaction.");
+        Assert.assertTrue(wikiWebPage.isSearchInputDisplayed(),
+                "Search input element is not displayed and is not enabled for interaction.");
     }
 
     @AfterMethod
